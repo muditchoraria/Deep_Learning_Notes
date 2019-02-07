@@ -73,7 +73,7 @@ def sigmoid(x, derivative = False):
     return x * (1-x) if derivative else 1 / (1 + np.exp(-x))
 
 def forward_propagation(X, parameters):
-     """
+    """
     Arguments:
     X -- input data of size (n_x, m)
     parameters -- python dictionary containing your parameters (output of initialization function)
@@ -200,15 +200,11 @@ def nn_model(X, Y, n_h, num_iterations = 10000, print_cost = False):
     """
     #Get the sizes
     n_x = layer_sizes(X, Y)[0]
-    n_y = layer_Sizes(X, Y)[2]
+    n_y = layer_sizes(X, Y)[2]
     
     #Initialise the parameters
     parameters = initialize_parameters(n_x, n_h, n_y)
-    W1 = parameters['W1']
-    b1 = parameters['b1']
-    W2 = parameters['W2']
-    b2 = parameters['b2']
-    
+   
     # Loop (gradient descent)
 
     for i in range(0, num_iterations):
