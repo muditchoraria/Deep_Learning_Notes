@@ -22,7 +22,7 @@ METHODOLOGY
 '''
 
 def layer_sizes(X, Y):
-     """
+    """
     Arguments:
     X -- input dataset of shape (input size, number of examples)
     Y -- labels of shape (output size, number of examples)
@@ -32,14 +32,13 @@ def layer_sizes(X, Y):
     n_h -- the size of the hidden layer
     n_y -- the size of the output layer
     """
-    
     n_x = shape_X[0]
     n_h = 4
     n_y = shape_Y[0]
     
     return(n_x, n_h, n_y)
 
-define initialize_parameters(n_x, n_h, n_y):
+def initialize_parameters(n_x, n_h, n_y):
     """
     Argument:
     n_x -- size of the input layer
@@ -54,26 +53,26 @@ define initialize_parameters(n_x, n_h, n_y):
         b2 -- bias vector of shape (n_y, 1)
     """
     
-        #To simplify the equation when calculating the activation
-        #so as to not have a transpose in the calculation we have swapped
-        #first and second value
+    #To simplify the equation when calculating the activation
+    #so as to not have a transpose in the calculation we have swapped
+    #first and second value
         
-        W1 = np.random.randn(n_h, n_x) * 0.01
-        b1 = np.zeros(shape=(n_h, 1))
-        W2 = np.random.randn(n_y, n_h) * 0.01
-        b2 = np.zeros(shape=(n_y, 1))
+    W1 = np.random.randn(n_h, n_x) * 0.01
+    b1 = np.zeros(shape=(n_h, 1))
+    W2 = np.random.randn(n_y, n_h) * 0.01
+    b2 = np.zeros(shape=(n_y, 1))
+    
+    parameters = {"W1": W1,
+                  "b1": b1,
+                  "W2": W2,
+                  "b2": b2}
+    
+    return parameters
         
-        parameters = {"W1": W1,
-                      "b1": b1,
-                      "W2": W2,
-                      "b2": b2}
-        
-        return parameters
-        
-define sigmoid(x, derivative = False):
+def sigmoid(x, derivative = False):
     return x * (1-x) if derivative else 1 / (1 + np.exp(-x))
 
-define forward_propagation(X, parameters):
+def forward_propagation(X, parameters):
      """
     Arguments:
     X -- input data of size (n_x, m)
@@ -100,7 +99,7 @@ define forward_propagation(X, parameters):
     
     return A2, cache
 
-define compute_cost(A2, Y, parameters):
+def compute_cost(A2, Y, parameters):
     """
     Computes the cross-entropy cost     
     Arguments:
@@ -120,7 +119,7 @@ define compute_cost(A2, Y, parameters):
                             # E.g., turns [[17]] into 17 
     return cost    
 
-define backward_propagation(parameters, cache, X, Y):
+def backward_propagation(parameters, cache, X, Y):
     """
     Implement the backward propagation using the instructions above.
     
@@ -184,4 +183,46 @@ def update_parameters(parameters, grads, learning_rate = 1.2):
                   "W2": W2,
                   "b2": b2}
     
+    return parameters
+
+#Compile everything
+def nn_model(X, Y, n_h, num_iterations = 10000, print_cost = False):
+    """
+    Arguments:
+    X -- dataset of shape (2, number of examples)
+    Y -- labels of shape (1, number of examples)
+    n_h -- size of the hidden layer
+    num_iterations -- Number of iterations in gradient descent loop
+    print_cost -- if True, print the cost every 1000 iterations
+    
+    Returns:
+    parameters -- parameters learnt by the model. They can then be used to predict.
+    """
+    #Get the sizes
+    n_x = layer_sizes(X, Y)[0]
+    n_y = layer_Sizes(X, Y)[2]
+    
+    #Initialise the parameters
+    parameters = initialize_parameters(n_x, n_h, n_y)
+    W1 = parameters['W1']
+    b1 = parameters['b1']
+    W2 = parameters['W2']
+    b2 = parameters['b2']
+    
+    # Loop (gradient descent)
+
+    for i in range(0, num_iterations):
+         
+        # Forward propagation. Inputs: "X, parameters". Outputs: "A2, cache".
+        A2, cache = forward_propagation(X, parameters)
+        # Cost function. Inputs: "A2, Y, parameters". Outputs: "cost".
+        cost = compute_cost(A2, Y, parameters)
+        # Backpropagation. Inputs: "parameters, cache, X, Y". Outputs: "grads".
+        grads = backward_propagation(parameters, cache, X, Y)
+        # Gradient descent parameter update. Inputs: "parameters, grads". Outputs: "parameters".
+        parameters = update_parameters(parameters, grads)
+        # Print the cost every 1000 iterations
+        if print_cost and i % 1000 == 0:
+            print ("Cost after iteration %i: %f" %(i, cost))
+
     return parameters
